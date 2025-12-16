@@ -149,13 +149,24 @@ class ProcessedArchiveDirectoryPhysChem(ProcessedArchiveDirectory):
 
     @property
     def archive_directory(self) -> pathlib.Path:
-        return (self._root_directory / self._archive_type / self._monitoring_programme / self._year / self._deliverer /
-                self._project)
+        return self._root_directory / self._archive_type / self._monitoring_programme / self._year / self._deliverer
 
-    def get_new_archive_directory(self) -> pathlib.Path:
-        path = self.archive_directory / f"Validering"
-        path.mkdir(parents=True, exist_ok=True)
-        return path
+    def get_new_archive_directory(self) -> tuple[pathlib.Path, pathlib.Path, pathlib.Path]:
+        val_path = self.archive_directory / f"validering"
+        val_path.mkdir(parents=True, exist_ok=True)
+        fb_path = self.archive_directory / f"validering" / f"feedback" / f"lägg_gamla_filer_här"
+        fb_path.mkdir(parents=True, exist_ok=True)
+        qc_path = self.archive_directory / f"validering" / f"QC"
+        qc_path.mkdir(parents=True, exist_ok=True)
+        return val_path, qc_path, fb_path
+
+    def add_files(self, source_dir: pathlib.Path = None, target_dir: pathlib.Path = None) -> list[pathlib.Path]:
+        copied_files = []
+        for file in source_dir.iterdir():
+            if file.is_file():
+                shutil.copy(file, target_dir)
+                copied_files.append(target_dir / file.name)
+        return copied_files
 
 
 MAPPER = {
@@ -165,7 +176,7 @@ MAPPER = {
 
 def get_archive_folder_object(
         root_directory: str = None,
-        archive_type: str = none,
+        archive_type: str = None,
         datatype: str = None,
         monitoring_programme: str = None,
         deliverer: str = None,
@@ -183,7 +194,7 @@ def get_archive_folder_object(
     # )
     ## ------------------------------------------------------------------
 
-    if datatype.lower() in ("physicalchemical"):
+    if archive_type.lower() in ("phy_che_validation"):
         return ProcessedArchiveDirectoryPhysChem(
             root_directory=root_directory,
             archive_type=archive_type,
@@ -201,3 +212,20 @@ def get_archive_folder_object(
             year=year,
             project=project,
         )
+
+# pathway = r"C:\Users\a002572\Desktop\Python\FileFlipper\Originalfiler\Phytoplankton\GU\2024\PROJ\received_202512011342"
+# archive_directory = pathlib.Path(pathway)
+# archive_directory_check = CheckOriginalArchiveDirectory(archive_directory).check_content()
+# folders_physchem = ProcessedArchiveDirectoryPhysChem(
+#    root_directory=pathlib.Path(r"C:\Users\a002572\Desktop\Python\FileFlipper\Arbetsmapp"), archive_type=
+#    "phy_che_validation", monitoring_programme="nationella_data", year="2021", deliverer="GU")
+# val_path, fb_path, qc_path = folders_physchem.get_new_archive_directory()
+# copied_files = folders_physchem.add_files(
+#    source_dir=archive_directory,
+#    target_dir=val_path
+# )
+# print(archive_directory)
+# print(folders_physchem)
+# print(archive_directory_check)
+# print(val_path, fb_path, qc_path)
+# print(copied_files)

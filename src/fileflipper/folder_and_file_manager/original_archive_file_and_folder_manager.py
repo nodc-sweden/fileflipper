@@ -7,6 +7,7 @@ import datetime
 import pathlib
 import shutil
 
+
 # This class has a method that checks if there is any content in the initial folder for received files.
 
 class InitialReceivedDirectory:
