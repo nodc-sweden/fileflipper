@@ -155,3 +155,9 @@ def get_archive_folder_object(
             year=year,
             project=project,
         )
+
+
+# folders_bio = OriginalArchiveDirectoryPhysChemProfile(
+#     root_directory=pathlib.Path(r"C:\Users\a002572\Desktop\Python\FileFlipper\Originalfiler")
+#     , datatype="PhysicalChemical", monitoring_programme="NAT_Data", deliverer="GU", year="2024", project="PROJ")
+# data_bio = folders_bio.get_new_received_directory()

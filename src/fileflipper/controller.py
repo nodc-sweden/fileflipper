@@ -60,3 +60,6 @@ class FileFlipperController:
                                                                                        year=year,
                                                                                        project=project,
                                                                                        shark_name=shark_name)
+
+
+        ## Kalla på NODC_codes för att få in kodlista till drop down menyer i GUIt
