@@ -1,13 +1,10 @@
-# Following script contains four classes performing actions related to checking content in initial delivered files folder,
-# creating a folder to store the original received files (Originalfiler_från_leverantör) and copy the files the the
-# originalarkiv-folder
-
+# The following script contain three classes performing actions related to checking content in initial delivered files
+# folder, creating a folder in the processed data archive (Arbetsmappen) and copy the files to the correct subfolders
+# based on file type in the arbetsmapp
 
 import pathlib
 import shutil
 
-
-# This class has a method that checks if there is any content in the original archive folder.
 
 class CheckOriginalArchiveDirectory:
     def __init__(self, directory: pathlib.Path | str = None):
@@ -53,20 +50,6 @@ class ProcessedArchiveDirectory:
         self._project = project
         self._shark_name = shark_name
 
-    #     self._validate()
-    #
-    # def _validate(self):
-    #     if not all([
-    #         self._root_directory,
-    #         self._archive_type,
-    #         self._datatype,
-    #         self._deliverer,
-    #         self._year,
-    #         self._project,
-    #         self._shark_name
-    #     ]):
-    #         raise AttributeError("Missing input for subfolder!")
-
     @property
     def archive_directory(self) -> pathlib.Path:
         return self._root_directory / self._archive_type / self._datatype
@@ -75,12 +58,6 @@ class ProcessedArchiveDirectory:
         path = self.archive_directory / f"SHARK_{self._datatype}_{self._year}_{self._deliverer}_{self._project}"
         path.mkdir(parents=True, exist_ok=True)
         return path
-
-    # Method add_files copies the files from originalarkivet and distributes them to the defined subfolders based on
-    # datatype. If a file already exist in the subfolder, an action is required. Cancel will stop the process, Add will
-    # add the file to the subfolder and if the new file has the same name as the old file, the file will be overwritten.
-    # HOW DO WE WANT THIS? New files normally have new names, we only want one file in each subfolder, except for
-    # correspondance where several emails are OK, but normally new emails have new names
 
     def add_files(self, source_dir: pathlib.Path = None, target_dir: pathlib.Path = None) -> list[pathlib.Path]:
         copied_files = []
@@ -130,21 +107,6 @@ class ProcessedArchiveDirectory:
             return copied_files
 
 
-# pathway = r"C:\Users\a002572\Desktop\Python\FileFlipper\Originalfiler\Phytoplankton\GU\2024\PROJ\received_202512011342"
-# archive_directory = pathlib.Path(pathway)
-# archive_directory_check = CheckOriginalArchiveDirectory(archive_directory).check_content()
-# folders_bio = ProcessedArchiveDirectory(
-#     root_directory=pathlib.Path(r"C:\Users\a002572\Desktop\Python\FileFlipper\Arbetsmapp"), archive_type="datasets"
-#     , datatype="Phytoplankton", year="2020", deliverer="GU", project="PROJ")
-# data_bio = folders_bio.get_new_archive_directory()
-# copy_files = folders_bio.add_files(archive_directory, data_bio)
-# print(archive_directory)
-# print(folders_bio)
-# print(archive_directory_check)
-# print(data_bio)
-# print(copy_files)
-
-
 class ProcessedArchiveDirectoryPhysChem(ProcessedArchiveDirectory):
 
     @property
@@ -183,17 +145,6 @@ def get_archive_folder_object(
         year: int | str = None,
         project: str = None,
 ):
-    ## -----------NOT SURE ABOUT THE SECTION BELOW-----------------------
-    # return MAPPER.get(datatype.lower(), OriginalArchiveDirectory)(
-    #     root_directory=root_directory,
-    #     datatype=datatype,
-    #     monitoring_programme=monitoring_programme,
-    #     deliverer=deliverer,
-    #     year=year,
-    #     project=project,
-    # )
-    ## ------------------------------------------------------------------
-
     if archive_type.lower() in ("phy_che_validation"):
         return ProcessedArchiveDirectoryPhysChem(
             root_directory=root_directory,
@@ -212,20 +163,3 @@ def get_archive_folder_object(
             year=year,
             project=project,
         )
-
-# pathway = r"C:\Users\a002572\Desktop\Python\FileFlipper\Originalfiler\Phytoplankton\GU\2024\PROJ\received_202512011342"
-# archive_directory = pathlib.Path(pathway)
-# archive_directory_check = CheckOriginalArchiveDirectory(archive_directory).check_content()
-# folders_physchem = ProcessedArchiveDirectoryPhysChem(
-#    root_directory=pathlib.Path(r"C:\Users\a002572\Desktop\Python\FileFlipper\Arbetsmapp"), archive_type=
-#    "phy_che_validation", monitoring_programme="nationella_data", year="2021", deliverer="GU")
-# val_path, fb_path, qc_path = folders_physchem.get_new_archive_directory()
-# copied_files = folders_physchem.add_files(
-#    source_dir=archive_directory,
-#    target_dir=val_path
-# )
-# print(archive_directory)
-# print(folders_physchem)
-# print(archive_directory_check)
-# print(val_path, fb_path, qc_path)
-# print(copied_files)

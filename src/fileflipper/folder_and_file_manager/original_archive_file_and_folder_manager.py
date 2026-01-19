@@ -1,14 +1,21 @@
-# Following script contains four classes performing actions related to checking content in initial delivered files folder,
-# creating a folder to store the original received files (Originalfiler_från_leverantör) and copy the files the the
-# originalarkiv-folder
+# The following script contain three classes performing actions related to checking content in initial delivered files
+# folder, creating a folder to store the original received files (Originalfiler_från_leverantör) and copy the files
+# the originalarkiv-folder for storage
 
+# The class InitialReceivedDirectory execute content checks on the folders containing received files
+
+# The class OriginalArchiveDirectory contains several methods to create the correctly named and located
+# originalarkiv-folder and copy the received files to this folder. The archive_directory is built to create the correct
+# folder structure for biology data deliveries, the get_new_received_directory creates a subfolder in the correct folder
+# namned "received_"+ datetime to be able to easy follow which deliveries are the latest. The method add_files then
+# copies the content from the initial folder to the correct newly created subfolder. There is a specific class below,
+# OriginalArchiveDirectoryPhysChemProfile for datatypes with other folder structures, for example profile and
+# physcialchemical.
 
 import datetime
 import pathlib
 import shutil
 
-
-# This class has a method that checks if there is any content in the initial folder for received files.
 
 class InitialReceivedDirectory:
     def __init__(self, directory: pathlib.Path | str = None):
@@ -26,13 +33,6 @@ def _get_year_str(year: str | int | list[int] | list[str]) -> str:
     if isinstance(year, str):
         return year
 
-
-# This class contains several methods to create the correctly named and located originalarkiv-folder and copy the
-# received files to this folder. The archive_directory is built to create the correct folder structure for biology
-# data deliveries, the get_new_received_directory creates a subfolder in the correct folder namned "received_"+ datetime
-# to be able to easy follow which deliveries are the latest. add_files then copies the content from the initial folder
-# to the correct newly created subfolder. There are specific classes below for datatypes with other folder structures,
-# for example profile and physcialchemical
 
 class OriginalArchiveDirectory:
     def __init__(self,
@@ -80,22 +80,6 @@ class OriginalArchiveDirectory:
         return copied_files
 
 
-## -------------TEST SECTION START--------------------------------------------------------------
-# initial_directory = pathlib.Path(r"C:\Users\a002572\Desktop\Python\FileFlipper\Slask")
-# initial_directory_check = InitialReceivedDirectory(initial_directory).check_content()
-# folders_bio = OriginalArchiveDirectory(
-#     root_directory=pathlib.Path(r"C:\Users\a002572\Desktop\Python\FileFlipper\Originalfiler")
-#     , datatype="Phytoplankton", deliverer="GU", year="2024", project="PROJ")
-# data_bio = folders_bio.get_new_received_directory()
-# copy_files = folders_bio.add_files(initial_directory, data_bio)
-# print(initial_directory)
-# print(folders_bio)
-# print(initial_directory_check)
-# print(data_bio)
-# print(copy_files)
-## -------------TEST SECTION END----------------------------------------------------------------
-
-
 class OriginalArchiveDirectoryPhysChemProfile(OriginalArchiveDirectory):
 
     def _validate(self):
@@ -128,17 +112,6 @@ def get_archive_folder_object(
         year: int | str = None,
         project: str = None,
 ):
-    ## -----------NOT SURE ABOUT THE SECTION BELOW-----------------------
-    # return MAPPER.get(datatype.lower(), OriginalArchiveDirectory)(
-    #     root_directory=root_directory,
-    #     datatype=datatype,
-    #     monitoring_programme=monitoring_programme,
-    #     deliverer=deliverer,
-    #     year=year,
-    #     project=project,
-    # )
-    ## ------------------------------------------------------------------
-
     if datatype.lower() in ("profile", "physicalchemical"):
         return OriginalArchiveDirectoryPhysChemProfile(
             root_directory=root_directory,
@@ -155,9 +128,3 @@ def get_archive_folder_object(
             year=year,
             project=project,
         )
-
-
-# folders_bio = OriginalArchiveDirectoryPhysChemProfile(
-#     root_directory=pathlib.Path(r"C:\Users\a002572\Desktop\Python\FileFlipper\Originalfiler")
-#     , datatype="PhysicalChemical", monitoring_programme="NAT_Data", deliverer="GU", year="2024", project="PROJ")
-# data_bio = folders_bio.get_new_received_directory()

@@ -20,12 +20,12 @@ class FileFlipperGUI:
         self._selected_orig_dir: None | pathlib.Path = None
         self.output = None
         self.control = None
-        self.selected_archive = {"value": None}
-        self.selected_datatype = {"value": None}
-        self.selected_monitoring_programme = {"value": None}
-        self.selected_deliverer = {"value": None}
-        self.selected_project = {"value": None}
-        self.selected_year = {"value": None}
+        self.selected_archive = None
+        self.selected_datatype = None
+        self.selected_monitoring_programme = None
+        self.selected_deliverer = None
+        self.selected_project = None
+        self.selected_year = None
         self.app = ft.app(target=self.main)
 
     def main(self, page: ft.Page):
@@ -165,20 +165,19 @@ class FileFlipperGUI:
         self._output.value = f"Selected archive directory: \n{folder.path}"
         self.update_page()
 
-    def get_options_archive(self):
-        options = []
+    def get_options_archive(self, a: ft.DropdownOption):
+        options_a = []
+        if a is None:
+            return
         for a in ARCTYPE:
-            if a is None:
-                continue
-            options.append(
+            options_a.append(
                 ft.DropdownOption(
                     text=a,
                 )
             )
+        return options_a
 
-        return options
-
-    def get_options_datatype(self):
+    def get_options_datatype(self, d : ft.DropdownOption):
         options = []
         for d in DTYPE:
             if d is None:
@@ -188,7 +187,6 @@ class FileFlipperGUI:
                     text=d,
                 )
             )
-
         return options
 
     def get_options_monitoring_programme(self):
@@ -201,7 +199,6 @@ class FileFlipperGUI:
                     text=mp,
                 )
             )
-
         return options
 
     def get_options_deliverer(self):
@@ -214,7 +211,6 @@ class FileFlipperGUI:
                     text=de,
                 )
             )
-
         return options
 
     def get_options_project(self):
@@ -227,7 +223,6 @@ class FileFlipperGUI:
                     text=p,
                 )
             )
-
         return options
 
     def get_options_year(self):
@@ -240,12 +235,12 @@ class FileFlipperGUI:
                     text=y,
                 )
             )
-
         return options
 
     def dropdown_selected_archive(self):
         self.selected_archive["value"] = self.control.value
         self.page.update()
+        print(self.selected_datatype)
 
     def dropdown_selected_datatype(self):
         self.selected_datatype["value"] = self.control.value
@@ -267,8 +262,8 @@ class FileFlipperGUI:
         self.selected_year["value"] = self.control.value
         self.page.update()
 
-    def _run_orig_directory(self):
-        orig_dir = OriginalArchiveDirectory(root_directory=self._selected_orig_dir["path"],
+    def _run_orig_directory(self, *args, **kwargs):
+        orig_dir = OriginalArchiveDirectory(root_directory=pathlib.Path(self._selected_orig_dir),
                                             datatype=self.selected_datatype["value"],
                                             deliverer=self.selected_deliverer["value"],
                                             year=self.selected_year["value"],
