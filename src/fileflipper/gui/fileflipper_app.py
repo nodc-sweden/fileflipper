@@ -165,19 +165,19 @@ class FileFlipperGUI:
         self._output.value = f"Selected archive directory: \n{folder.path}"
         self.update_page()
 
-    def get_options_archive(self, a: ft.DropdownOption):
-        options_a = []
-        if a is None:
-            return
+    def get_options_archive(self):
+        options = []
         for a in ARCTYPE:
-            options_a.append(
+            if a is None:
+                continue
+            options.append(
                 ft.DropdownOption(
                     text=a,
                 )
             )
-        return options_a
+        return options
 
-    def get_options_datatype(self, d : ft.DropdownOption):
+    def get_options_datatype(self):
         options = []
         for d in DTYPE:
             if d is None:

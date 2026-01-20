@@ -264,12 +264,18 @@ def main(page: ft.Page):
         on_click=lambda _: file_content_orig.get_directory_path(),
     )
 
+    btn_select_archive_directory = ft.ElevatedButton(
+        "Select processed archive directory",
+        on_click=lambda _: file_content_proc.get_directory_path(),
+    )
+
     row_directory = ft.Row([btn_select_ini_directory,
-                            btn_select_orig_directory]
+                            btn_select_orig_directory,
+                            btn_select_archive_directory]
                            )
 
     btn_select_archive = ft.Dropdown(
-        "Select archive",
+        "Select archive type",
         editable=True,
         enable_filter=True,
         label="Archive",
@@ -287,7 +293,7 @@ def main(page: ft.Page):
     )
 
     btn_select_monitoring_programme = ft.Dropdown(
-        "Select monitoring programme",
+        "Select monitoring programme code",
         editable=True,
         enable_filter=True,
         label="Monitoring programme",
@@ -296,7 +302,7 @@ def main(page: ft.Page):
     )
 
     btn_select_deliverer = ft.Dropdown(
-        "Select deliverer",
+        "Select deliverer code",
         editable=True,
         enable_filter=True,
         label="Deliverer",
@@ -305,7 +311,7 @@ def main(page: ft.Page):
     )
 
     btn_select_project = ft.Dropdown(
-        "Select project",
+        "Select project code",
         editable=True,
         enable_filter=True,
         label="Project",
@@ -322,48 +328,56 @@ def main(page: ft.Page):
         on_change=dropdown_selected_year,
     )
 
-    row_options = ft.Row([btn_select_datatype,
-                          btn_select_monitoring_programme,
-                          btn_select_deliverer,
-                          btn_select_project,
-                          btn_select_year]
-                         )
+    row_options_standard = ft.Row([btn_select_archive,
+                                   btn_select_datatype,
+                                   btn_select_deliverer,
+                                   btn_select_project,
+                                   btn_select_year]
+                                  )
+
+    row_options_pp = ft.Row([btn_select_monitoring_programme])
+
+    btn_create_original_archive = ft.ElevatedButton(
+        "Create original archive directory",
+        on_click=run_orig_directory,
+    )
+
+    btn_create_processed_archive = ft.ElevatedButton(
+        "Create processed archive directory",
+        on_click=run_proc_directory,
+    )
+
+    row_standard = ft.Row([btn_create_original_archive,
+                           btn_create_processed_archive]
+                          )
+
+    btn_create_original_archive_pp = ft.ElevatedButton(
+        "Create original archive directory physicalchemical or profile",
+        on_click=run_orig_directory_physchemprof,
+    )
+
+    btn_create_processed_archive_pp = ft.ElevatedButton(
+        "Create processed archive directory physicalchemical or profile",
+        on_click=run_proc_directory_physchemprof,
+    )
+
+    row_standard_pp = ft.Row([btn_create_original_archive_pp,
+                              btn_create_processed_archive_pp]
+                             )
 
     # ---- GUI ----
     page.add(
         ft.Column(
             [
                 row_directory,
-                row_options,
-                ft.ElevatedButton(
-                    "Create original archive directory",
-                    on_click=run_orig_directory,
-                ),
-                ft.ElevatedButton(
-                    "Create original archive directory physicalchemical or profile",
-                    on_click=run_orig_directory_physchemprof,
-                ),
                 ft.Container(height=30),
-                ft.ElevatedButton(
-                    "Select processed archive directory",
-                    on_click=lambda _: file_content_proc.get_directory_path(),
-                ),
-                ft.Dropdown(
-                    "Select archive",
-                    editable=True,
-                    enable_filter=True,
-                    label="Archive",
-                    options=get_options_archive(),
-                    on_change=dropdown_selected_archive,
-                ),
-                ft.ElevatedButton(
-                    "Create processed archive directory",
-                    on_click=run_proc_directory,
-                ),
-                ft.ElevatedButton(
-                    "Create processed archive directory physicalchemical or profile",
-                    on_click=run_proc_directory_physchemprof,
-                ),
+                row_options_standard,
+                ft.Container(height=30),
+                row_standard,
+                ft.Container(height=30),
+                row_options_pp,
+                ft.Container(height=30),
+                row_standard_pp,
                 output,
             ],
             spacing=15,
