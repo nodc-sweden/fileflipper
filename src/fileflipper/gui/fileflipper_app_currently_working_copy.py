@@ -254,6 +254,14 @@ def main(page: ft.Page):
 
         page.update()
 
+    def run_standard(folder):
+        run_orig_directory(folder)
+        run_proc_directory(folder)
+
+    def run_physchem(folder):
+        run_orig_directory_physchemprof(folder)
+        run_proc_directory_physchemprof(folder)
+
     btn_select_ini_directory = ft.ElevatedButton(
         "Select initial directory",
         on_click=lambda _: file_content_ini.get_directory_path(),
@@ -328,42 +336,23 @@ def main(page: ft.Page):
         on_change=dropdown_selected_year,
     )
 
-    row_options_standard = ft.Row([btn_select_archive,
-                                   btn_select_datatype,
-                                   btn_select_deliverer,
-                                   btn_select_project,
-                                   btn_select_year]
-                                  )
+    row_options = ft.Row([btn_select_archive,
+                          btn_select_monitoring_programme,
+                          btn_select_datatype,
+                          btn_select_deliverer,
+                          btn_select_project,
+                          btn_select_year]
+                         )
 
-    row_options_pp = ft.Row([btn_select_monitoring_programme])
-
-    btn_create_original_archive = ft.ElevatedButton(
-        "Create original archive directory",
-        on_click=run_orig_directory,
+    btn_standard = ft.ElevatedButton(
+        "Create original and processed archive directory",
+        on_click=run_standard,
     )
 
-    btn_create_processed_archive = ft.ElevatedButton(
-        "Create processed archive directory",
-        on_click=run_proc_directory,
+    btn_physchem = ft.ElevatedButton(
+        "Create original and processed archive directory (PhysicalChemical/Profile)",
+        on_click=run_physchem,
     )
-
-    row_standard = ft.Row([btn_create_original_archive,
-                           btn_create_processed_archive]
-                          )
-
-    btn_create_original_archive_pp = ft.ElevatedButton(
-        "Create original archive directory physicalchemical or profile",
-        on_click=run_orig_directory_physchemprof,
-    )
-
-    btn_create_processed_archive_pp = ft.ElevatedButton(
-        "Create processed archive directory physicalchemical or profile",
-        on_click=run_proc_directory_physchemprof,
-    )
-
-    row_standard_pp = ft.Row([btn_create_original_archive_pp,
-                              btn_create_processed_archive_pp]
-                             )
 
     # ---- GUI ----
     page.add(
@@ -371,13 +360,11 @@ def main(page: ft.Page):
             [
                 row_directory,
                 ft.Container(height=30),
-                row_options_standard,
+                row_options,
                 ft.Container(height=30),
-                row_standard,
-                ft.Container(height=30),
-                row_options_pp,
-                ft.Container(height=30),
-                row_standard_pp,
+                btn_standard,
+                ft.Container(height=10),
+                btn_physchem,
                 output,
             ],
             spacing=15,
