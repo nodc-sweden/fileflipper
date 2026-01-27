@@ -111,6 +111,17 @@ class ProcessedArchiveDirectoryPhysChem(ProcessedArchiveDirectory):
 
     @property
     def archive_directory(self) -> pathlib.Path:
+        mapping = {
+            "NAT_Data": "nationella_data",
+            "PROJ_Data": "proj_data",
+            "REG_RECIP_Data": "reg_recip_data",
+        }
+
+        self._monitoring_programme = mapping.get(
+            self._monitoring_programme,
+            self._monitoring_programme
+        )
+
         return self._root_directory / self._archive_type / self._monitoring_programme / self._year / self._deliverer
 
     def get_new_archive_directory(self) -> tuple[pathlib.Path, pathlib.Path, pathlib.Path]:
